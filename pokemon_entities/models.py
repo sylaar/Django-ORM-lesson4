@@ -10,7 +10,7 @@ class Pokemon(models.Model):
                                            verbose_name='Из кого эволюционирует',
                                            null=True,
                                            blank=True,
-                                        #    related_name='next_evolutions',
+                                           related_name='next_evolutions',
                                            on_delete=models.SET_NULL)
     image = models.ImageField(null=True, blank=True)
 
