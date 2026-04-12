@@ -61,35 +61,36 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    # with open('pokemon_entities/pokemons.json', encoding='utf-8') as database:
-    #     pokemons = json.load(database)['pokemons']
-
-    # for pokemon in pokemons:
-    #     if pokemon['pokemon_id'] == int(pokemon_id):
-    #         requested_pokemon = pokemon
-    #         break
-    # else:
-    #     return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
+    pokemon = get_object_or_404(Pokemon, id=pokemon_id)
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    # for pokemon_entity in requested_pokemon['entities']:
-    #     add_pokemon(
-    #         folium_map, pokemon_entity['lat'],
-    #         pokemon_entity['lon'],
-    #         pokemon['img_url']
-    #     )
-    show_all_pokemons(request)
+    current_time = localtime()
+
+    pokemon_entities = PokemonEntity.objects.filter(
+        pokemon=pokemon,
+        appeared_at__lte=current_time,
+        disappeared_at__gt=current_time,
+    )
+
+    for pokemon_entity in pokemon_entities:
+        image_url = request.build_absolute_uri(pokemon.image.url)
+        add_pokemon(folium_map, pokemon_entity.lat, pokemon_entity.lon, image_url)
     
-    pokemon = get_object_or_404(Pokemon, id=pokemon_id)
     pokemon_info = {
         'pokemon_id': pokemon.pk,
-        'img_url': request.build_absolute_uri(pokemon.image.url),
         'title_ru': pokemon.title,
-        'title_en': '',
-        'title_jp': '',
-        'description': '',
+        'title_en': pokemon.title_en,
+        'title_jp': pokemon.title_jp,
+        'description': pokemon.description,
+        'img_url': request.build_absolute_uri(pokemon.image.url),
     }
 
+    if pokemon.previous_evolution:
+        pokemon_info['previous_evolution'] = {
+            'pokemon_id': pokemon.previous_evolution.pk,
+            'title_ru': pokemon.previous_evolution.title,
+            'img_url': request.build_absolute_uri(pokemon.previous_evolution.image.url)
+        }
 
     return render(request, 'pokemon.html', context={
         'map': folium_map._repr_html_(), 'pokemon': pokemon_info

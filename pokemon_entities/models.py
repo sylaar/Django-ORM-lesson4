@@ -2,6 +2,16 @@ from django.db import models  # noqa F401
 
 class Pokemon(models.Model):
     title = models.CharField(max_length=200)
+    title_ru = models.CharField(max_length=200)
+    title_en = models.CharField(max_length=200)
+    title_jp = models.CharField(max_length=200)
+    description = models.TextField()
+    previous_evolution = models.ForeignKey('self',
+                                           verbose_name='Из кого эволюционирует',
+                                           null=True,
+                                           blank=True,
+                                        #    related_name='next_evolutions',
+                                           on_delete=models.SET_NULL)
     image = models.ImageField(null=True, blank=True)
 
     def __str__(self):
