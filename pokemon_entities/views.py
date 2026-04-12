@@ -43,14 +43,14 @@ def show_all_pokemons(request):
             add_pokemon(
                 folium_map, pokemon_entity.lat,
                 pokemon_entity.lon,
-                request.build_absolute_uri(pokemon_entity.pokemon.image.url),
+                request.build_absolute_uri(pokemon_entity.pokemon.image.url) if pokemon_entity.pokemon.image else DEFAULT_IMAGE_URL,
             )
 
     pokemons_on_page = []
     for pokemon in Pokemon.objects.all():
         pokemons_on_page.append({
             'pokemon_id': pokemon.pk,
-            'img_url': request.build_absolute_uri(pokemon.image.url),
+            'img_url': request.build_absolute_uri(pokemon.image.url) if pokemon.image else DEFAULT_IMAGE_URL,
             'title_ru': pokemon.title,
         })
 
@@ -73,7 +73,7 @@ def show_pokemon(request, pokemon_id):
     )
 
     for pokemon_entity in pokemon_entities:
-        image_url = request.build_absolute_uri(pokemon.image.url)
+        image_url = request.build_absolute_uri(pokemon.image.url) if pokemon.image else DEFAULT_IMAGE_URL
         add_pokemon(folium_map, pokemon_entity.lat, pokemon_entity.lon, image_url)
     
     pokemon_info = {
@@ -82,14 +82,14 @@ def show_pokemon(request, pokemon_id):
         'title_en': pokemon.title_en,
         'title_jp': pokemon.title_jp,
         'description': pokemon.description,
-        'img_url': request.build_absolute_uri(pokemon.image.url),
+        'img_url': request.build_absolute_uri(pokemon.image.url) if pokemon.image else DEFAULT_IMAGE_URL,
     }
 
     if pokemon.previous_evolution:
         pokemon_info['previous_evolution'] = {
             'pokemon_id': pokemon.previous_evolution.pk,
             'title_ru': pokemon.previous_evolution.title,
-            'img_url': request.build_absolute_uri(pokemon.previous_evolution.image.url),
+            'img_url': request.build_absolute_uri(pokemon.previous_evolution.image.url) if pokemon.previous_evolution.image else DEFAULT_IMAGE_URL,
         }
 
     next_evolution = pokemon.next_evolutions.first()
@@ -97,7 +97,7 @@ def show_pokemon(request, pokemon_id):
         pokemon_info['next_evolution'] = {
             'pokemon_id': next_evolution.pk,
             'title_ru': next_evolution.title,
-            'img_url': request.build_absolute_uri(next_evolution.image.url),
+            'img_url': request.build_absolute_uri(next_evolution.image.url) if next_evolution.image else DEFAULT_IMAGE_URL,
         }
 
     return render(request, 'pokemon.html', context={
