@@ -1,5 +1,5 @@
 # Карта покемонов
-<img width="564" height="362" alt="Снимок экрана 2026-04-12 в 15 57 50" src="https://github.com/user-attachments/assets/78d498b8-8a7f-4f24-9e6a-f17ed85b4a91" />
+<img width="564" height="362" alt="Снимок экрана 2026-04-12 в 15 57 50" src="https://github.com/user-attachments/assets/4ebfb8ed-99b3-4d95-8691-d8c8c004ee73" />
 
 ### Краткое описание
 
